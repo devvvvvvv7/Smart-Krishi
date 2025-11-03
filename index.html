@@ -3,422 +3,327 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ESP32 Smart Agriculture System</title>
+  <title>Smart Krishi - Light Theme</title>
   <style>
     :root{
-      --bg:#0a0e1a;
-      --card:#111827;
-      --muted:#9ca3af;
-      --accent:#10b981;
-      --accent-dark:#059669;
-      --chat-bg:#1f2937;
-      --chat-user:#3b82f6;
-      --chat-bot:#8b5cf6;
-      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --muted:#64748b;
+      --accent:#22c1c3;
+      --chat-bg:#f1f5f9;
+      --chat-user:#667eea;
+      --chat-bot:#764ba2;
+      --text:#0f172a;
+      --border:#e2e8f0;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; }
     body{
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(180deg, #0a0e1a 0%, #1a1f2e 100%);
-      color: #f3f4f6;
-      min-height: 100vh;
-      padding: 16px;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      margin:0;
+      background:linear-gradient(180deg,#f8fafc 0%, #e0f2fe 100%);
+      color:var(--text);
+      min-height:100vh;
     }
     .container{
-      max-width: 1600px;
-      margin: 0 auto;
+      max-width:1400px;
+      margin:0 auto;
+      padding:20px;
     }
     header{
-      text-align: center;
-      margin-bottom: 32px;
-      padding: 24px;
-      background: var(--card);
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      text-align:center;
+      margin-bottom:24px;
     }
     h1{
-      font-size: 32px;
-      font-weight: 700;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 8px;
+      margin:0 0 8px 0;
+      font-size:28px;
+      background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
     }
     .subtitle{
-      color: var(--muted);
-      font-size: 15px;
+      color:var(--muted);
+      font-size:14px;
     }
     .main-grid{
-      display: grid;
-      grid-template-columns: 1fr 500px;
-      gap: 24px;
-      margin-bottom: 24px;
+      display:grid;
+      grid-template-columns:2fr 1fr;
+      gap:20px;
+      margin-bottom:20px;
     }
     .dashboard-section{
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 16px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:12px;
     }
     .card{
-      background: var(--card);
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.05);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .card:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      background:var(--card);
+      padding:16px;
+      border-radius:12px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+      border:1px solid var(--border);
     }
     .card h3{
-      margin-bottom: 16px;
-      font-size: 18px;
-      color: #f3f4f6;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      margin:0 0 12px 0;
+      font-size:16px;
+      color:var(--text);
     }
     .value{
-      font-size: 32px;
-      font-weight: 700;
-      background: var(--gradient-success);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size:24px;
+      font-weight:700;
+      color:var(--text);
     }
     .row{
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
     }
     label{
-      font-size: 14px;
-      color: var(--muted);
-      display: block;
-      margin-bottom: 8px;
+      font-size:13px;
+      color:var(--muted);
+      display:block;
+      margin-bottom:4px;
     }
     input[type=range]{
-      width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: rgba(255,255,255,0.1);
-      outline: none;
-      -webkit-appearance: none;
-    }
-    input[type=range]::-webkit-slider-thumb{
-      -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--accent);
-      cursor: pointer;
+      width:100%;
     }
     input[type=number], select{
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(0,0,0,0.3);
-      color: #f3f4f6;
-      width: 100%;
-      font-size: 14px;
+      padding:6px 8px;
+      border-radius:6px;
+      border:1px solid var(--border);
+      background:var(--bg);
+      color:var(--text);
+      width:100%;
     }
     button{
-      background: var(--gradient-success);
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-size: 14px;
-      box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+      background:var(--accent);
+      border:none;
+      padding:8px 16px;
+      border-radius:8px;
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+      transition:all 0.2s;
+      font-size:13px;
     }
     button:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(16,185,129,0.4);
+      opacity:0.8;
+      transform:translateY(-1px);
     }
     button:disabled{
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
+      opacity:0.5;
+      cursor:not-allowed;
     }
-    
     .sensor-grid{
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
     }
     .sensor-item{
-      text-align: center;
-      position: relative;
+      text-align:center;
     }
-    .circular-progress{
-      width: 140px;
-      height: 140px;
-      margin: 0 auto 12px;
-      position: relative;
-    }
-    .circular-progress svg{
-      transform: rotate(-90deg);
-      width: 100%;
-      height: 100%;
-    }
-    .circular-progress .bg-circle{
-      fill: none;
-      stroke: rgba(255,255,255,0.1);
-      stroke-width: 10;
-    }
-    .circular-progress .progress-circle{
-      fill: none;
-      stroke: url(#gradient);
-      stroke-width: 10;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 0.5s ease;
-    }
-    .circular-progress .center-text{
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 28px;
-      font-weight: 700;
-      color: #10b981;
-    }
-    .sensor-item label{
-      font-size: 13px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    
     .controls{
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
     }
     
+    /* Chatbot Styles */
     .chat-container{
-      background: var(--chat-bg);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 12px 48px rgba(0,0,0,0.5);
-      display: flex;
-      flex-direction: column;
-      height: 800px;
-      border: 1px solid rgba(255,255,255,0.05);
+      background:var(--card);
+      border-radius:16px;
+      padding:20px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.1);
+      border:1px solid var(--border);
+      display:flex;
+      flex-direction:column;
+      height:700px;
     }
     .chat-header{
-      text-align: center;
-      margin-bottom: 20px;
+      text-align:center;
+      margin-bottom:16px;
     }
     .chat-header h2{
-      font-size: 24px;
-      font-weight: 700;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      margin:0;
+      font-size:20px;
+      background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
     }
     .city-label{
-      font-size: 14px;
-      color: var(--muted);
-      margin-top: 6px;
+      font-size:13px;
+      color:var(--muted);
+      margin-top:4px;
     }
     #weather-info{
-      background: rgba(59,130,246,0.1);
-      border: 1px solid rgba(59,130,246,0.3);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      font-size: 14px;
-      line-height: 1.8;
+      background:rgba(102,126,234,0.08);
+      border:1px solid rgba(102,126,234,0.2);
+      border-radius:8px;
+      padding:12px;
+      margin-bottom:12px;
+      font-size:13px;
+      line-height:1.6;
+      color:var(--text);
     }
     #getWeatherBtn{
-      width: 100%;
-      padding: 12px;
-      background: var(--gradient-primary);
-      margin-bottom: 16px;
-      box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+      width:100%;
+      padding:10px;
+      background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin-bottom:12px;
+      color:#fff;
     }
     #chat-box{
-      flex: 1;
-      overflow-y: auto;
-      background: rgba(0,0,0,0.2);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-    #chat-box::-webkit-scrollbar{
-      width: 6px;
-    }
-    #chat-box::-webkit-scrollbar-track{
-      background: rgba(0,0,0,0.2);
-      border-radius: 3px;
-    }
-    #chat-box::-webkit-scrollbar-thumb{
-      background: rgba(102,126,234,0.5);
-      border-radius: 3px;
+      flex:1;
+      overflow-y:auto;
+      background:var(--bg);
+      border-radius:12px;
+      padding:12px;
+      margin-bottom:12px;
+      border:1px solid var(--border);
     }
     .message{
-      margin: 12px 0;
-      padding: 14px 18px;
-      border-radius: 16px;
-      max-width: 85%;
-      animation: slideIn 0.3s ease;
+      margin:8px 0;
+      padding:10px 14px;
+      border-radius:12px;
+      max-width:85%;
+      animation:slideIn 0.3s ease;
       word-break: break-word;
-      line-height: 1.6;
     }
     @keyframes slideIn{
       from{opacity:0;transform:translateY(10px)}
       to{opacity:1;transform:translateY(0)}
     }
     .user{
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      color: white;
-      margin-left: auto;
-      text-align: right;
-      box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+      background:linear-gradient(135deg, var(--chat-user) 0%, #764ba2 100%);
+      color:white;
+      margin-left:auto;
+      text-align:right;
     }
     .bot{
-      background: rgba(139,92,246,0.15);
-      border: 1px solid rgba(139,92,246,0.3);
-      color: #f3f4f6;
-      box-shadow: 0 4px 12px rgba(139,92,246,0.2);
+      background:rgba(102,126,234,0.1);
+      border:1px solid rgba(102,126,234,0.2);
+      color:var(--text);
     }
     #controls{
-      display: flex;
-      gap: 10px;
+      display:flex;
+      gap:8px;
     }
     #user-input{
-      flex: 1;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(102,126,234,0.3);
-      background: rgba(0,0,0,0.3);
-      color: #f3f4f6;
-      font-size: 14px;
-      transition: border-color 0.2s;
+      flex:1;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:white;
+      color:var(--text);
+      font-size:14px;
     }
     #user-input:focus{
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+      outline:none;
+      border-color:var(--chat-user);
     }
-    #mic-btn, #stop-voice-btn{
-      background: rgba(102,126,234,0.2);
-      color: #667eea;
-      padding: 14px 18px;
-      min-width: 50px;
+    #mic-btn{
+      background:rgba(102,126,234,0.1);
+      color:#667eea;
+      padding:12px 16px;
     }
     #mic-btn.listening{
-      background: #ef4444;
-      color: white;
-      animation: pulse 1s infinite;
+      background:#e74c3c;
+      color:white;
+      animation:pulse 1s infinite;
     }
     @keyframes pulse{
-      0%,100%{opacity:1; transform: scale(1)}
-      50%{opacity:0.8; transform: scale(1.05)}
+      0%,100%{opacity:1}
+      50%{opacity:0.7}
     }
     #send-btn{
-      background: var(--gradient-primary);
-      color: white;
-      padding: 14px 24px;
-      box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+      background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color:white;
+      padding:12px 20px;
     }
     .toggle-section{
-      display: flex;
-      justify-content: space-between;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      display:flex;
+      justify-content:space-between;
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid var(--border);
     }
     .toggle-item{
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      color: var(--muted);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      color:var(--muted);
     }
     .toggle-item input[type="checkbox"]{
-      width: 48px;
-      height: 24px;
-      cursor: pointer;
-      appearance: none;
-      background: rgba(255,255,255,0.1);
-      border-radius: 12px;
-      position: relative;
-      transition: 0.3s;
-      border: 1px solid rgba(255,255,255,0.2);
+      width:40px;
+      height:20px;
+      cursor:pointer;
+      appearance:none;
+      background:#cbd5e1;
+      border-radius:10px;
+      position:relative;
+      transition:0.3s;
     }
     .toggle-item input[type="checkbox"]:checked{
-      background: var(--chat-user);
+      background:var(--chat-user);
     }
     .toggle-item input[type="checkbox"]::before{
-      content: "";
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      top: 2px;
-      left: 3px;
-      background: white;
-      transition: 0.3s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      content:"";
+      position:absolute;
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      top:2px;
+      left:2px;
+      background:white;
+      transition:0.3s;
     }
     .toggle-item input[type="checkbox"]:checked::before{
-      left: 25px;
+      left:22px;
     }
     
     #toastContainer{
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      z-index:9999;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
     }
     .toast{
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: white;
-      padding: 14px 24px;
-      border-radius: 12px;
-      font-size: 14px;
-      box-shadow: 0 8px 24px rgba(16,185,129,0.4);
-      opacity: 0;
-      transform: translateX(400px);
-      animation: slideInToast 0.4s ease forwards, slideOutToast 0.4s ease 3s forwards;
-      font-weight: 500;
+      background:#007bff;
+      color:white;
+      padding:12px 20px;
+      border-radius:12px;
+      font-size:14px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.2);
+      opacity:0;
+      transform:translateY(20px);
+      animation:slideUp 0.4s ease forwards, fadeOut 0.4s ease 3s forwards;
     }
-    @keyframes slideInToast{
-      to{opacity:1;transform:translateX(0)}
+    @keyframes slideUp{
+      to{opacity:1;transform:translateY(0)}
     }
-    @keyframes slideOutToast{
-      to{opacity:0;transform:translateX(400px)}
+    @keyframes fadeOut{
+      to{opacity:0;transform:translateY(20px)}
     }
     
-    @media (max-width:1200px){
+    @media (max-width:1024px){
       .main-grid{
-        grid-template-columns: 1fr;
+        grid-template-columns:1fr;
       }
       .chat-container{
-        height: 600px;
+        height:500px;
       }
     }
     @media (max-width:768px){
       .dashboard-section{
-        grid-template-columns: 1fr;
+        grid-template-columns:1fr;
       }
       .sensor-grid{
-        grid-template-columns: 1fr;
-      }
-      h1{
-        font-size: 24px;
+        grid-template-columns:1fr;
       }
     }
   </style>
@@ -427,50 +332,55 @@
   <div class="container">
     <header>
       <h1>🌾 Smart Krishi</h1>
-      <p class="subtitle">Real-time monitoring, intelligent control & AI-powered crop assistance for Indore</p>
+      <p class="subtitle">Real-time monitoring, control & AI-powered crop assistance for Indore</p>
     </header>
 
     <div class="main-grid">
+      <!-- Dashboard Section -->
       <div>
         <div class="dashboard-section">
+          <!-- Security Card -->
           <div class="card">
             <h3>🔐 Security Status</h3>
             <div class="row">
               <div>
                 <div id="securityStatus" class="value">—</div>
               </div>
-              <div id="securityIcon" style="font-size:48px">🔒</div>
+              <div id="securityIcon" style="font-size:40px">🔒</div>
             </div>
           </div>
 
+          <!-- Relay Card -->
           <div class="card">
             <h3>⚡ Relay Control</h3>
             <div class="row">
               <div class="value" id="relayState">—</div>
               <button id="btnToggleRelay">Toggle</button>
             </div>
-            <div style="margin-top:12px;font-size:13px;color:var(--muted)" id="relayMessage">&nbsp;</div>
+            <div style="margin-top:8px;font-size:12px;color:var(--muted)" id="relayMessage">&nbsp;</div>
           </div>
 
+          <!-- Mode Selection -->
           <div class="card">
             <h3>⚙️ Mode Selection</h3>
-            <div style="margin-top:12px">
-              <label style="display:block;margin-bottom:12px;cursor:pointer;font-size:15px;color:#f3f4f6">
+            <div style="margin-top:8px">
+              <label style="display:block;margin-bottom:8px;cursor:pointer;color:var(--text)">
                 <input type="radio" name="mode" id="autoMode" checked> Auto Mode
               </label>
-              <label style="display:block;cursor:pointer;font-size:15px;color:#f3f4f6">
+              <label style="display:block;cursor:pointer;color:var(--text)">
                 <input type="radio" name="mode" id="manualMode"> Manual Mode
               </label>
             </div>
           </div>
 
+          <!-- Manual Control -->
           <div class="card">
             <h3>🎮 Manual Control</h3>
             <div class="controls">
-              <label style="cursor:pointer;font-size:15px;color:#f3f4f6">
+              <label style="cursor:pointer;color:var(--text)">
                 <input type="checkbox" id="manualToggle"> Enable Manual
               </label>
-              <div style="display:flex;gap:10px;align-items:center">
+              <div style="display:flex;gap:8px;align-items:center">
                 <select id="manualState" style="flex:1">
                   <option>OFF</option>
                   <option>ON</option>
@@ -480,79 +390,38 @@
             </div>
           </div>
 
+          <!-- Sensors -->
           <div class="card" style="grid-column:span 2">
             <h3>📊 Sensor Readings</h3>
             <div class="sensor-grid">
               <div class="sensor-item">
-                <div class="circular-progress">
-                  <svg viewBox="0 0 160 160">
-                    <defs>
-                      <linearGradient id="gradientTemp" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
-                      </linearGradient>
-                    </defs>
-                    <circle class="bg-circle" cx="80" cy="80" r="70"></circle>
-                    <circle id="tempCircle" class="progress-circle" cx="80" cy="80" r="70" 
-                            stroke="url(#gradientTemp)" stroke-dasharray="440" stroke-dashoffset="440"></circle>
-                  </svg>
-                  <div class="center-text" id="temperature">—</div>
-                </div>
                 <label>Temperature</label>
+                <div class="value" id="temperature">—</div>
               </div>
-              
               <div class="sensor-item">
-                <div class="circular-progress">
-                  <svg viewBox="0 0 160 160">
-                    <defs>
-                      <linearGradient id="gradientHumidity" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
-                      </linearGradient>
-                    </defs>
-                    <circle class="bg-circle" cx="80" cy="80" r="70"></circle>
-                    <circle id="humidityCircle" class="progress-circle" cx="80" cy="80" r="70" 
-                            stroke="url(#gradientHumidity)" stroke-dasharray="440" stroke-dashoffset="440"></circle>
-                  </svg>
-                  <div class="center-text" id="humidity">—</div>
-                </div>
                 <label>Humidity</label>
+                <div class="value" id="humidity">—</div>
               </div>
-              
               <div class="sensor-item">
-                <div class="circular-progress">
-                  <svg viewBox="0 0 160 160">
-                    <defs>
-                      <linearGradient id="gradientSoil" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
-                      </linearGradient>
-                    </defs>
-                    <circle class="bg-circle" cx="80" cy="80" r="70"></circle>
-                    <circle id="soilCircle" class="progress-circle" cx="80" cy="80" r="70" 
-                            stroke="url(#gradientSoil)" stroke-dasharray="440" stroke-dashoffset="440"></circle>
-                  </svg>
-                  <div class="center-text" id="soil">—</div>
-                </div>
                 <label>Soil Moisture</label>
+                <div class="value" id="soil">—</div>
               </div>
-              
               <div class="sensor-item">
-                <div style="padding:40px 0">
-                  <div class="value" id="rain" style="font-size:48px">—</div>
-                  <div style="margin-top:12px;font-size:20px;font-weight:600;color:var(--muted)">Rain Status</div>
-                </div>
+                <label>Rain Status</label>
+                <div class="value" id="rain">—</div>
               </div>
             </div>
           </div>
 
+          <!-- Soil Threshold -->
           <div class="card">
             <h3>💧 Soil Threshold</h3>
-            <div id="soilThresholdVal" style="font-size:28px;font-weight:700;margin-bottom:12px;color:#10b981">40%</div>
+            <div id="soilThresholdVal" style="font-size:20px;font-weight:700;margin-bottom:8px;color:var(--text)">40%</div>
             <input id="soilThreshold" type="range" min="0" max="100" value="40">
-            <button id="btnSaveThreshold" style="margin-top:12px;width:100%">Save Threshold</button>
+            <button id="btnSaveThreshold" style="margin-top:8px;width:100%">Save Threshold</button>
           </div>
 
+          <!-- Timer -->
           <div class="card">
             <h3>⏱️ Timer Control</h3>
             <div class="controls">
@@ -560,43 +429,45 @@
                 <label>Duration (seconds)</label>
                 <input id="timerDuration" type="number" min="1" value="30">
               </div>
-              <div style="display:flex;gap:10px">
+              <div style="display:flex;gap:8px">
                 <button id="btnStartTimer" style="flex:1">Start</button>
                 <button id="btnStopTimer" style="flex:1">Stop</button>
               </div>
-              <div style="font-size:13px;color:var(--muted)">
-                <div>Status: <span id="timerStatus" style="font-weight:600">—</span></div>
-                <div>Remaining: <span id="remainingTime" style="font-weight:600">—</span> sec</div>
+              <div style="font-size:12px;color:var(--text)">
+                <div>Status: <span id="timerStatus">—</span></div>
+                <div>Remaining: <span id="remainingTime">—</span> sec</div>
               </div>
             </div>
           </div>
 
+          <!-- LDR -->
           <div class="card">
             <h3>💡 LDR / Beam</h3>
-            <div style="margin-top:12px;font-size:16px">
-              Beam value: <span id="beamVal" style="font-weight:700;color:#10b981;font-size:20px">—</span>
+            <div style="margin-top:8px;color:var(--text)">
+              Beam value: <span id="beamVal" style="font-weight:600">—</span>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- Chatbot Section -->
       <div>
         <div class="chat-container">
           <div class="chat-header">
             <h2>🤖 AI Crop Assistant</h2>
-            <div class="city-label">📍 Indore, Madhya Pradesh, India</div>
+            <div class="city-label">📍 Indore, Madhya Pradesh</div>
           </div>
 
-          <div id="weather-info">🌤 Loading weather data...</div>
+          <div id="weather-info">🌤 Loading weather...</div>
           <button id="getWeatherBtn">🔄 Refresh Weather</button>
-
+ 
           <div id="chat-box"></div>
 
           <div id="controls">
-            <input type="text" id="user-input" placeholder="Ask about crops, irrigation, pests..." />
-            <button id="mic-btn" title="Voice Input">🎙️</button>
-            <button id="stop-voice-btn" title="Stop Voice">🔇</button>
+            <input type="text" id="user-input" placeholder="Ask about crops, irrigation..." />
+            <button id="mic-btn">🎙️</button>
             <button id="send-btn">Send</button>
+            <button id="stop-voice-btn" title="Stop Voice (TTS)">🔇</button>
           </div>
 
           <div class="toggle-section">
@@ -616,6 +487,7 @@
 
   <div id="toastContainer"></div>
 
+  <!-- Firebase (compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -623,6 +495,7 @@
   <script type="module">
     import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBFDcw1HNyZp6rRLMIEKX7c6-SdR7t7NCg",
       authDomain: "esp32-agri-3c9a0.firebaseapp.com",
@@ -637,17 +510,20 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
+    // Gemini Config & Weather key
     const GEMINI_API_KEY = "AIzaSyDPWG0daDvSAsGuKWRK154hno4w8n3f35o";
     const WEATHER_API_KEY = "93ddf07dd0fc46c213a2900b17d633ab";
     const FIXED_CITY = "Indore";
 
+    // Initialize Gemini client
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     let weatherData = null;
-    let isSpeaking = false;
-    let currentUtterance = null;
+    let retryCount = 0;
+    const MAX_RETRIES = 3;
 
+    // Toast functionality
     const toastContainer = document.getElementById('toastContainer');
     function showToast(message) {
       const toast = document.createElement('div');
@@ -657,21 +533,20 @@
       setTimeout(() => toast.remove(), 3500);
     }
 
+    // Firebase DB write helper
     function write(path, value) {
-      return db.ref(path).set(value).catch(e => {
-        console.error('DB write error', e);
+      return db.ref(path).set(value).catch(e=>{
+        console.error('DB write error',e);
         showToast('❌ Failed to update database');
       });
     }
 
+    // Dashboard Elements
     const el = {
       temperature: document.getElementById('temperature'),
       humidity: document.getElementById('humidity'),
       soil: document.getElementById('soil'),
       rain: document.getElementById('rain'),
-      tempCircle: document.getElementById('tempCircle'),
-      humidityCircle: document.getElementById('humidityCircle'),
-      soilCircle: document.getElementById('soilCircle'),
       securityStatus: document.getElementById('securityStatus'),
       securityIcon: document.getElementById('securityIcon'),
       relayState: document.getElementById('relayState'),
@@ -693,12 +568,7 @@
       manualMode: document.getElementById('manualMode')
     };
 
-    function updateCircularProgress(circle, value, max = 100) {
-      const circumference = 440;
-      const offset = circumference - (value / max) * circumference;
-      circle.style.strokeDashoffset = offset;
-    }
-
+    // Chatbot Elements
     const chatBox = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
     const langToggle = document.getElementById("lang-toggle");
@@ -706,23 +576,16 @@
     const weatherInfo = document.getElementById("weather-info");
     const micBtn = document.getElementById("mic-btn");
 
+    // Firebase Auth
     auth.signInAnonymously().catch(err => console.error('Auth error', err));
 
+    // Firebase Listeners
     db.ref('/sensors').on('value', snap => {
       const s = snap.val() || {};
-      if (s.temperature !== undefined) {
-        el.temperature.textContent = s.temperature + '°C';
-        updateCircularProgress(el.tempCircle, s.temperature, 50);
-      }
-      if (s.humidity !== undefined) {
-        el.humidity.textContent = s.humidity + '%';
-        updateCircularProgress(el.humidityCircle, s.humidity);
-      }
-      if (s.soil !== undefined) {
-        el.soil.textContent = s.soil + '%';
-        updateCircularProgress(el.soilCircle, s.soil);
-      }
-      if (s.rain !== undefined) el.rain.textContent = s.rain ? '🌧️ YES' : '☀️ NO';
+      if (s.temperature !== undefined) el.temperature.textContent = s.temperature + '°C';
+      if (s.humidity !== undefined) el.humidity.textContent = s.humidity + '%';
+      if (s.soil !== undefined) el.soil.textContent = s.soil + '%';
+      if (s.rain !== undefined) el.rain.textContent = s.rain ? 'YES' : 'NO';
     });
 
     db.ref('/security/status').on('value', snap => {
@@ -750,7 +613,8 @@
       else if (status === "Timer complete") showToast("✅ Timer complete — Pump OFF");
     });
 
-    el.btnToggleRelay.addEventListener('click', async () => {
+    // Dashboard Controls
+    el.btnToggleRelay.addEventListener('click', async ()=>{
       if (el.autoMode.checked) {
         showToast('⚠️ Switch to Manual mode first');
         return;
@@ -761,7 +625,7 @@
       showToast(`✅ Relay ${next}`);
     });
 
-    el.applyManual.addEventListener('click', async () => {
+    el.applyManual.addEventListener('click', async ()=>{
       if (el.autoMode.checked) {
         showToast('⚠️ Switch to Manual mode first');
         return;
@@ -771,16 +635,16 @@
       showToast(`✅ Manual: ${el.manualState.value}`);
     });
 
-    el.manualToggle.addEventListener('change', () => {
+    el.manualToggle.addEventListener('change', ()=>{
       if (el.autoMode.checked) {
         showToast('⚠️ Auto mode active');
-        el.manualToggle.checked = false;
+        el.manualToggle.checked=false;
         return;
       }
       write('/relay/manual', el.manualToggle.checked);
     });
 
-    el.btnSaveThreshold.addEventListener('click', async () => {
+    el.btnSaveThreshold.addEventListener('click', async ()=>{
       const v = parseInt(el.soilThreshold.value);
       await write('/relay/soilThreshold', v);
       el.soilThresholdVal.textContent = v + '%';
@@ -797,26 +661,26 @@
 
     auth.onAuthStateChanged(() => updateSoilThresholdState());
 
-    el.autoMode.addEventListener('change', () => {
+    el.autoMode.addEventListener('change', ()=> {
       if (el.autoMode.checked) {
         el.manualMode.checked = false;
         write('/relay/manual', false);
         updateSoilThresholdState();
-        showToast('✅ Auto Mode Active');
+        showToast('✅ Auto Mode');
       }
     });
 
-    el.manualMode.addEventListener('change', () => {
+    el.manualMode.addEventListener('change', ()=> {
       if (el.manualMode.checked) {
         el.autoMode.checked = false;
         write('/relay/manual', true);
         updateSoilThresholdState();
-        showToast('✅ Manual Mode Active');
+        showToast('✅ Manual Mode');
       }
     });
 
-    el.btnStartTimer.addEventListener('click', async () => {
-      const sec = parseInt(el.timerDuration.value, 10) || 0;
+    el.btnStartTimer.addEventListener('click', async ()=>{
+      const sec = parseInt(el.timerDuration.value,10) || 0;
       if (sec <= 0) {
         showToast('⚠️ Invalid duration');
         return;
@@ -826,77 +690,18 @@
       showToast(`⏱️ Timer: ${sec}s`);
     });
 
-    el.btnStopTimer.addEventListener('click', async () => {
+    el.btnStopTimer.addEventListener('click', async ()=>{
       await write('/relay/startTimer', false);
       await write('/relay/timerDuration', 0);
       await write('/relay/timerStatus', 'Stopped');
       showToast('⏹️ Timer stopped');
     });
 
-    el.soilThreshold.addEventListener('input', () => {
+    el.soilThreshold.addEventListener('input', ()=>{
       el.soilThresholdVal.textContent = el.soilThreshold.value + '%';
     });
 
-    // IMPROVED TTS FUNCTION
-    function speakText(text) {
-      if (!ttsToggle.checked || !text) return;
-
-      try {
-        // Stop any ongoing speech
-        if (isSpeaking) {
-          window.speechSynthesis.cancel();
-          isSpeaking = false;
-        }
-
-        // Wait a bit for cancel to complete
-        setTimeout(() => {
-          try {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = langToggle.checked ? "hi-IN" : "en-US";
-            utterance.rate = 0.9;
-            utterance.pitch = 1;
-            utterance.volume = 1;
-
-            utterance.onstart = () => {
-              isSpeaking = true;
-              currentUtterance = utterance;
-            };
-
-            utterance.onend = () => {
-              isSpeaking = false;
-              currentUtterance = null;
-            };
-
-            utterance.onerror = (e) => {
-              console.error("TTS error:", e);
-              isSpeaking = false;
-              currentUtterance = null;
-            };
-
-            window.speechSynthesis.speak(utterance);
-          } catch (e) {
-            console.error("TTS speak error:", e);
-            isSpeaking = false;
-          }
-        }, 100);
-      } catch (e) {
-        console.error("TTS error:", e);
-      }
-    }
-
-    function stopVoice() {
-      try {
-        if (isSpeaking) {
-          window.speechSynthesis.cancel();
-          isSpeaking = false;
-          currentUtterance = null;
-          showToast("🔇 Voice stopped");
-        }
-      } catch (e) {
-        console.error("Stop voice error:", e);
-      }
-    }
-
+    // Chatbot Functions
     function addMessage(text, sender) {
       const div = document.createElement("div");
       div.classList.add("message", sender);
@@ -904,18 +709,23 @@
       chatBox.appendChild(div);
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      if (sender === "bot") {
-        speakText(text);
+      if (sender === "bot" && ttsToggle.checked) {
+        try {
+          const speech = new SpeechSynthesisUtterance(text);
+          speech.lang = langToggle.checked ? "hi-IN" : "en-US";
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(speech);
+        } catch (e) {
+          console.error("TTS error", e);
+        }
       }
     }
 
     function getIrrigationAdvice(temp, humidity, rain) {
-      if (rain > 2) return "💧 Rain expected — irrigation not needed";
-      if (humidity > 75) return "🌫️ High humidity — reduce irrigation";
-      if (temp > 35) return "🔥 Very hot — irrigate early morning";
-      if (temp > 30) return "☀️ Hot — maintain moisture levels";
-      if (temp < 20) return "🌡️ Cool — reduce irrigation";
-      return "🌤 Moderate — normal irrigation";
+      if (rain > 2) return "💧 Rain expected — no irrigation needed";
+      if (humidity > 75) return "🌫️ High humidity — light irrigation";
+      if (temp > 34) return "🔥 Hot — early morning irrigation";
+      return "🌤 Moderate — normal schedule";
     }
 
     async function getWeather() {
@@ -933,114 +743,97 @@
           humidity: data.main.humidity,
           desc: data.weather[0].description,
           rain,
-          windSpeed: data.wind.speed,
-          pressure: data.main.pressure
         };
         const advice = getIrrigationAdvice(weatherData.temp, weatherData.humidity, weatherData.rain);
         weatherInfo.innerHTML = `
           🌍 <b>${FIXED_CITY}</b><br>
-          🌡 ${weatherData.temp}°C | 💧 ${weatherData.humidity}% | 🌬️ ${weatherData.windSpeed} m/s<br>
+          🌡 ${weatherData.temp}°C | 💧 ${weatherData.humidity}%<br>
           🌦 ${weatherData.desc}<br>
-          <b>Irrigation:</b> ${advice}
+          📅 Tomorrow: ${advice}
         `;
-        addMessage(`📍 Weather: ${weatherData.temp}°C, ${weatherData.desc}. ${advice}`, "bot");
+        addMessage(`📍 Weather: ${weatherData.temp}°C, ${weatherData.desc}`, "bot");
       } catch (err) {
         console.error("Weather error", err);
         weatherInfo.textContent = "⚠️ " + (err.message || "Failed to fetch weather");
       }
     }
 
-    // IMPROVED RESPONSE EXTRACTION
-    function extractBotResponse(result) {
+    function extractTextFromModelResult(result) {
       try {
-        if (!result) return "No response received";
-        
-        if (result.response && typeof result.response.text === 'function') {
+        if (result?.response && typeof result.response.text === 'function') {
           return result.response.text();
         }
-        
-        if (result.candidates && result.candidates.length > 0) {
-          const candidate = result.candidates[0];
-          if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
-            return candidate.content.parts[0].text || "Empty response";
-          }
-        }
-        
+        if (result?.output?.[0]?.content?.[0]?.text) return result.output[0].content[0].text;
+        if (result?.candidates?.[0]?.content) return result.candidates[0].content;
         if (typeof result === 'string') return result;
-        
-        return "Unable to parse response";
+        return JSON.stringify(result);
       } catch (e) {
-        console.error("Response extraction error:", e);
-        return "Error parsing response";
+        console.error("extractText error", e);
+        return "⚠️ (Could not parse model response)";
       }
     }
 
     async function sendMessage() {
       const message = userInput.value.trim();
       if (!message) return;
-      
       addMessage(message, "user");
       userInput.value = "";
 
-      const isHindi = langToggle.checked;
-      const language = isHindi ? "Hindi (Devanagari)" : "English";
+      let prompt = message;
+      if (weatherData && /weather|rain|crop|temperature|climate|irrigation|soil|humidity|farm/i.test(message)) {
+        prompt = `You are an expert agricultural advisor for Indore. Current weather:
+Temperature: ${weatherData.temp}°C
+Humidity: ${weatherData.humidity}%
+Weather: ${weatherData.desc}
+Rain: ${weatherData.rain} mm
 
-      let prompt = "";
-      const isAgriQuery = /weather|rain|crop|temperature|climate|irrigation|soil|humidity|farm|pest|fertilizer|harvest|season|plant|sow|मौसम|बारिश|फसल|सिंचाई/i.test(message);
-
-      if (weatherData && isAgriQuery) {
-        prompt = `You are an expert agricultural advisor for Indore, Madhya Pradesh.
-
-Weather Data:
-- Temperature: ${weatherData.temp}°C
-- Humidity: ${weatherData.humidity}%
-- Weather: ${weatherData.desc}
-- Rain: ${weatherData.rain}mm
-- Wind: ${weatherData.windSpeed} m/s
-
-Farmer Question: "${message}"
+Question: ${message}
 
 Provide practical advice on:
-1. Best crops for current weather
-2. Irrigation schedule (timing & amount)
-3. Pest/disease warnings
-4. Fertilizer recommendations
-5. Action steps for today
+1. Suitable crops for current conditions
+2. Irrigation best practices
+3. Pest management
+4. Seasonal recommendations
 
-Response Language: ${language}
-Keep answer: short, practical, actionable, farmer-friendly.`;
+Keep it clear and actionable.`;
       } else {
-        prompt = `You are an agricultural expert helping Indian farmers.
+        prompt = `You are an agricultural expert. Question: ${message}
 
-Question: "${message}"
-
-Provide helpful advice on farming, crops, irrigation, pests, soil, or fertilizers.
-
-Response Language: ${language}
-Keep answer: short, clear, practical.`;
+Provide helpful advice on crop management, irrigation, pest control, and farming practices.`;
       }
 
+      const language = langToggle.checked ? "Hindi" : "English";
+      const finalPrompt = `Reply in ${language}. ${prompt}`;
+
       try {
-        const result = await model.generateContent(prompt);
-        const text = extractBotResponse(result);
+        const result = await model.generateContent(finalPrompt);
+        const text = extractTextFromModelResult(result);
         addMessage(text, "bot");
+        retryCount = 0;
       } catch (err) {
-        console.error("AI Error:", err);
-        const errMsg = err?.message || String(err);
-        
-        if (/429|quota|rate limit/i.test(errMsg)) {
-          addMessage("⚠️ API limit reached. Please wait 1 minute and try again.", "bot");
-        } else if (/blocked|safety/i.test(errMsg)) {
-          addMessage("⚠️ Response blocked by safety filter. Please rephrase your question.", "bot");
+        console.error("API Error:", err);
+        const errMsg = (err && err.message) ? err.message : String(err);
+
+        if (/429|rate limit|Too Many Requests/i.test(errMsg) && retryCount < MAX_RETRIES) {
+          retryCount++;
+          const waitTime = Math.pow(2, retryCount) * 1000;
+          addMessage(`⏳ Rate limit. Retrying in ${waitTime/1000}s... (${retryCount}/${MAX_RETRIES})`, "bot");
+          setTimeout(() => {
+            userInput.value = message;
+            sendMessage();
+          }, waitTime);
+        } else if (/429|rate limit|Too Many Requests/i.test(errMsg)) {
+          addMessage("⚠️ Rate limit exceeded. Try again in a few minutes.", "bot");
+          retryCount = 0;
         } else {
-          addMessage(`⚠️ Error: ${errMsg}`, "bot");
+          addMessage("⚠️ Error: " + errMsg, "bot");
         }
       }
     }
 
-    // SPEECH RECOGNITION
+    // Speech Recognition
     let recognition;
-    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
     if (SpeechRec) {
       recognition = new SpeechRec();
       recognition.continuous = false;
@@ -1056,9 +849,8 @@ Keep answer: short, clear, practical.`;
         micBtn.textContent = "🎙️";
       };
       recognition.onerror = (e) => {
-        console.error("Speech error:", e);
-        micBtn.classList.remove("listening");
-        addMessage("🎙️ Voice error. Try again.", "bot");
+        console.error("Speech recognition error", e);
+        addMessage("🎙️ Voice input error. Try again.", "bot");
       };
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
@@ -1071,29 +863,140 @@ Keep answer: short, clear, practical.`;
           recognition.lang = langToggle.checked ? "hi-IN" : "en-IN";
           recognition.start();
         } catch (e) {
-          console.error("Mic error:", e);
+          console.error("mic start error", e);
         }
       });
     } else {
       micBtn.disabled = true;
-      micBtn.title = "Not supported";
+      micBtn.title = "Speech recognition not supported in this browser";
+    }
+
+    // Voice Stop Function
+    function stopVoice() {
+      try {
+        window.speechSynthesis.cancel();
+        showToast("🔇 Voice stopped");
+      } catch (e) {
+        console.error("stopVoice error", e);
+      }
     }
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") stopVoice();
     });
 
-    document.getElementById("stop-voice-btn").onclick = stopVoice;
+    document.addEventListener("DOMContentLoaded", () => {
+      const stopBtn = document.getElementById("stop-voice-btn");
+      if (stopBtn) stopBtn.onclick = stopVoice;
+    });
+
+    // Event Listeners
     document.getElementById("send-btn").onclick = sendMessage;
     document.getElementById("getWeatherBtn").onclick = getWeather;
-    
     userInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") sendMessage();
     });
 
-    addMessage("👋 Namaste! I'm your AI Agricultural Assistant for Indore. Ask me about crops, irrigation, pests, fertilizer, or weather! 🌾", "bot");
-    
+    // Initial welcome message
+    addMessage("👋 Hi! I'm your AI Crop Assistant. Ask about crops, irrigation, pests, or weather — I'll help with practical, actionable advice.", "bot");
+
+    // Initial Load
     getWeather();
+
+    // Gemini Crop Prediction
+    let language = "en";
+
+    const cropCard = document.createElement("div");
+    cropCard.innerHTML = `
+      <div id="crop-section" style="margin-top:20px;padding:20px;border-radius:20px;
+           background:linear-gradient(135deg,#f8fafc,#e0f2fe);color:var(--text);box-shadow:0 0 10px rgba(102,126,234,0.2);border:1px solid var(--border);">
+        <h2 style="font-size:22px;display:flex;align-items:center;gap:10px;">
+          🌾 <span id="crop-title">AI Crop Prediction</span>
+        </h2>
+        <p id="crop-desc" style="color:var(--muted);margin-bottom:10px;">
+          Get AI-based suggestions for the best crop based on your farm's live data.
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button id="predictBtn" 
+            style="background:linear-gradient(135deg,#22c1c3,#667eea);
+                   color:#fff;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">
+            🌱 Predict Best Crop
+          </button>
+          <button id="langToggle" 
+            style="background:#cbd5e1;color:var(--text);padding:10px 20px;border:none;
+                   border-radius:8px;cursor:pointer;">
+            🇮🇳 हिंदी
+          </button>
+        </div>
+        <div id="prediction-box" 
+             style="margin-top:15px;padding:15px;border-radius:10px;background:rgba(102,126,234,0.05);display:none;border:1px solid var(--border);">
+          <h3 id="crop-name" style="color:#22c1c3;font-size:18px;margin-bottom:5px;"></h3>
+          <p id="crop-reason" style="font-size:14px;color:var(--text);"></p>
+        </div>
+      </div>
+    `;
+    document.querySelector(".chat-container").appendChild(cropCard);
+
+    document.getElementById("langToggle").addEventListener("click", () => {
+      language = language === "en" ? "hi" : "en";
+      const isHindi = language === "hi";
+      document.getElementById("langToggle").textContent = isHindi ? "🌍 English" : "🇮🇳 हिंदी";
+      document.getElementById("crop-title").textContent = isHindi ? "एआई फसल भविष्यवाणी" : "AI Crop Prediction";
+      document.getElementById("crop-desc").textContent = isHindi
+        ? "अपने खेत के लाइव डेटा के आधार पर सर्वश्रेष्ठ फसल की एआई सिफारिश प्राप्त करें।"
+        : "Get AI-based suggestions for the best crop based on your farm's live data.";
+    });
+
+    document.getElementById("predictBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("predictBtn");
+      btn.disabled = true;
+      btn.textContent = "🔍 Analyzing...";
+
+      try {
+        const snapshot = await db.ref("/sensors").once("value");
+        const s = snapshot.val();
+        if (!s) {
+          addMessage("⚠️ No sensor data found in Firebase.", "bot");
+          btn.disabled = false;
+          btn.textContent = "🌱 Predict Best Crop";
+          return;
+        }
+
+        const { temperature, humidity, soil } = s;
+
+        const prompt = language === "hi"
+          ? `आप एक कृषि विशेषज्ञ हैं। निम्न डेटा के आधार पर सबसे उपयुक्त फसल सुझाएं और उसका कारण बताएं।
+तापमान: ${temperature}°C
+नमी: ${humidity}%
+मिट्टी की नमी: ${soil}%
+उत्तर इस प्रारूप में दें:
+🌾 अनुशंसित फसल: <नाम>
+🧠 कारण: <संक्षिप्त कारण>`
+          : `You are an agriculture expert. Based on this sensor data, recommend the best crop to grow and give a short reason.
+Temperature: ${temperature}°C
+Humidity: ${humidity}%
+Soil Moisture: ${soil}%
+Format:
+🌾 Recommended Crop: <name>
+🧠 Reason: <short reason>`;
+
+        const result = await model.generateContent(prompt);
+        const response = extractTextFromModelResult(result);
+
+        const [_, cropName, reason] = response.match(/🌾.*?: (.+)\n🧠.*?: (.+)/s) || [];
+        document.getElementById("prediction-box").style.display = "block";
+        document.getElementById("crop-name").textContent = cropName ? `🌾 ${cropName}` : "No crop identified";
+        document.getElementById("crop-reason").textContent = reason || response;
+
+        addMessage(response, "bot");
+      } catch (err) {
+        console.error(err);
+        addMessage("⚠️ Error during crop prediction.", "bot");
+      }
+
+      btn.disabled = false;
+      btn.textContent = "🌱 Predict Best Crop";
+    });
   </script>
 </body>
 </html>
