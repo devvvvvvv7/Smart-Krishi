@@ -1,0 +1,1099 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ESP32 Smart Agriculture System</title>
+  <style>
+    :root{
+      --bg:#0a0e1a;
+      --card:#111827;
+      --muted:#9ca3af;
+      --accent:#10b981;
+      --accent-dark:#059669;
+      --chat-bg:#1f2937;
+      --chat-user:#3b82f6;
+      --chat-bot:#8b5cf6;
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body{
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #0a0e1a 0%, #1a1f2e 100%);
+      color: #f3f4f6;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .container{
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    header{
+      text-align: center;
+      margin-bottom: 32px;
+      padding: 24px;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    h1{
+      font-size: 32px;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .subtitle{
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .main-grid{
+      display: grid;
+      grid-template-columns: 1fr 500px;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .dashboard-section{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .card{
+      background: var(--card);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .card h3{
+      margin-bottom: 16px;
+      font-size: 18px;
+      color: #f3f4f6;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .value{
+      font-size: 32px;
+      font-weight: 700;
+      background: var(--gradient-success);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    label{
+      font-size: 14px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 8px;
+    }
+    input[type=range]{
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.1);
+      outline: none;
+      -webkit-appearance: none;
+    }
+    input[type=range]::-webkit-slider-thumb{
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+    input[type=number], select{
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.3);
+      color: #f3f4f6;
+      width: 100%;
+      font-size: 14px;
+    }
+    button{
+      background: var(--gradient-success);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+    }
+    button:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(16,185,129,0.4);
+    }
+    button:disabled{
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .sensor-grid{
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .sensor-item{
+      text-align: center;
+      position: relative;
+    }
+    .circular-progress{
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 12px;
+      position: relative;
+    }
+    .circular-progress svg{
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+    .circular-progress .bg-circle{
+      fill: none;
+      stroke: rgba(255,255,255,0.1);
+      stroke-width: 10;
+    }
+    .circular-progress .progress-circle{
+      fill: none;
+      stroke: url(#gradient);
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+    .circular-progress .center-text{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 28px;
+      font-weight: 700;
+      color: #10b981;
+    }
+    .sensor-item label{
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .controls{
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .chat-container{
+      background: var(--chat-bg);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      height: 800px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .chat-header{
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .chat-header h2{
+      font-size: 24px;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .city-label{
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    #weather-info{
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    #getWeatherBtn{
+      width: 100%;
+      padding: 12px;
+      background: var(--gradient-primary);
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+    }
+    #chat-box{
+      flex: 1;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.2);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    #chat-box::-webkit-scrollbar{
+      width: 6px;
+    }
+    #chat-box::-webkit-scrollbar-track{
+      background: rgba(0,0,0,0.2);
+      border-radius: 3px;
+    }
+    #chat-box::-webkit-scrollbar-thumb{
+      background: rgba(102,126,234,0.5);
+      border-radius: 3px;
+    }
+    .message{
+      margin: 12px 0;
+      padding: 14px 18px;
+      border-radius: 16px;
+      max-width: 85%;
+      animation: slideIn 0.3s ease;
+      word-break: break-word;
+      line-height: 1.6;
+    }
+    @keyframes slideIn{
+      from{opacity:0;transform:translateY(10px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    .user{
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      margin-left: auto;
+      text-align: right;
+      box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+    }
+    .bot{
+      background: rgba(139,92,246,0.15);
+      border: 1px solid rgba(139,92,246,0.3);
+      color: #f3f4f6;
+      box-shadow: 0 4px 12px rgba(139,92,246,0.2);
+    }
+    #controls{
+      display: flex;
+      gap: 10px;
+    }
+    #user-input{
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(102,126,234,0.3);
+      background: rgba(0,0,0,0.3);
+      color: #f3f4f6;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    #user-input:focus{
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+    #mic-btn, #stop-voice-btn{
+      background: rgba(102,126,234,0.2);
+      color: #667eea;
+      padding: 14px 18px;
+      min-width: 50px;
+    }
+    #mic-btn.listening{
+      background: #ef4444;
+      color: white;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse{
+      0%,100%{opacity:1; transform: scale(1)}
+      50%{opacity:0.8; transform: scale(1.05)}
+    }
+    #send-btn{
+      background: var(--gradient-primary);
+      color: white;
+      padding: 14px 24px;
+      box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+    }
+    .toggle-section{
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .toggle-item{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .toggle-item input[type="checkbox"]{
+      width: 48px;
+      height: 24px;
+      cursor: pointer;
+      appearance: none;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      position: relative;
+      transition: 0.3s;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .toggle-item input[type="checkbox"]:checked{
+      background: var(--chat-user);
+    }
+    .toggle-item input[type="checkbox"]::before{
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      top: 2px;
+      left: 3px;
+      background: white;
+      transition: 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .toggle-item input[type="checkbox"]:checked::before{
+      left: 25px;
+    }
+    
+    #toastContainer{
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .toast{
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      box-shadow: 0 8px 24px rgba(16,185,129,0.4);
+      opacity: 0;
+      transform: translateX(400px);
+      animation: slideInToast 0.4s ease forwards, slideOutToast 0.4s ease 3s forwards;
+      font-weight: 500;
+    }
+    @keyframes slideInToast{
+      to{opacity:1;transform:translateX(0)}
+    }
+    @keyframes slideOutToast{
+      to{opacity:0;transform:translateX(400px)}
+    }
+    
+    @media (max-width:1200px){
+      .main-grid{
+        grid-template-columns: 1fr;
+      }
+      .chat-container{
+        height: 600px;
+      }
+    }
+    @media (max-width:768px){
+      .dashboard-section{
+        grid-template-columns: 1fr;
+      }
+      .sensor-grid{
+        grid-template-columns: 1fr;
+      }
+      h1{
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌾 Smart Krishi</h1>
+      <p class="subtitle">Real-time monitoring, intelligent control & AI-powered crop assistance for Indore</p>
+    </header>
+
+    <div class="main-grid">
+      <div>
+        <div class="dashboard-section">
+          <div class="card">
+            <h3>🔐 Security Status</h3>
+            <div class="row">
+              <div>
+                <div id="securityStatus" class="value">—</div>
+              </div>
+              <div id="securityIcon" style="font-size:48px">🔒</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>⚡ Relay Control</h3>
+            <div class="row">
+              <div class="value" id="relayState">—</div>
+              <button id="btnToggleRelay">Toggle</button>
+            </div>
+            <div style="margin-top:12px;font-size:13px;color:var(--muted)" id="relayMessage">&nbsp;</div>
+          </div>
+
+          <div class="card">
+            <h3>⚙️ Mode Selection</h3>
+            <div style="margin-top:12px">
+              <label style="display:block;margin-bottom:12px;cursor:pointer;font-size:15px;color:#f3f4f6">
+                <input type="radio" name="mode" id="autoMode" checked> Auto Mode
+              </label>
+              <label style="display:block;cursor:pointer;font-size:15px;color:#f3f4f6">
+                <input type="radio" name="mode" id="manualMode"> Manual Mode
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>🎮 Manual Control</h3>
+            <div class="controls">
+              <label style="cursor:pointer;font-size:15px;color:#f3f4f6">
+                <input type="checkbox" id="manualToggle"> Enable Manual
+              </label>
+              <div style="display:flex;gap:10px;align-items:center">
+                <select id="manualState" style="flex:1">
+                  <option>OFF</option>
+                  <option>ON</option>
+                </select>
+                <button id="applyManual">Apply</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="grid-column:span 2">
+            <h3>📊 Sensor Readings</h3>
+            <div class="sensor-grid">
+              <div class="sensor-item">
+                <div class="circular-progress">
+                  <svg viewBox="0 0 160 160">
+                    <defs>
+                      <linearGradient id="gradientTemp" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+                      </linearGradient>
+                    </defs>
+                    <circle class="bg-circle" cx="80" cy="80" r="70"></circle>
+                    <circle id="tempCircle" class="progress-circle" cx="80" cy="80" r="70" 
+                            stroke="url(#gradientTemp)" stroke-dasharray="440" stroke-dashoffset="440"></circle>
+                  </svg>
+                  <div class="center-text" id="temperature">—</div>
+                </div>
+                <label>Temperature</label>
+              </div>
+              
+              <div class="sensor-item">
+                <div class="circular-progress">
+                  <svg viewBox="0 0 160 160">
+                    <defs>
+                      <linearGradient id="gradientHumidity" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                      </linearGradient>
+                    </defs>
+                    <circle class="bg-circle" cx="80" cy="80" r="70"></circle>
+                    <circle id="humidityCircle" class="progress-circle" cx="80" cy="80" r="70" 
+                            stroke="url(#gradientHumidity)" stroke-dasharray="440" stroke-dashoffset="440"></circle>
+                  </svg>
+                  <div class="center-text" id="humidity">—</div>
+                </div>
+                <label>Humidity</label>
+              </div>
+              
+              <div class="sensor-item">
+                <div class="circular-progress">
+                  <svg viewBox="0 0 160 160">
+                    <defs>
+                      <linearGradient id="gradientSoil" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+                      </linearGradient>
+                    </defs>
+                    <circle class="bg-circle" cx="80" cy="80" r="70"></circle>
+                    <circle id="soilCircle" class="progress-circle" cx="80" cy="80" r="70" 
+                            stroke="url(#gradientSoil)" stroke-dasharray="440" stroke-dashoffset="440"></circle>
+                  </svg>
+                  <div class="center-text" id="soil">—</div>
+                </div>
+                <label>Soil Moisture</label>
+              </div>
+              
+              <div class="sensor-item">
+                <div style="padding:40px 0">
+                  <div class="value" id="rain" style="font-size:48px">—</div>
+                  <div style="margin-top:12px;font-size:20px;font-weight:600;color:var(--muted)">Rain Status</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>💧 Soil Threshold</h3>
+            <div id="soilThresholdVal" style="font-size:28px;font-weight:700;margin-bottom:12px;color:#10b981">40%</div>
+            <input id="soilThreshold" type="range" min="0" max="100" value="40">
+            <button id="btnSaveThreshold" style="margin-top:12px;width:100%">Save Threshold</button>
+          </div>
+
+          <div class="card">
+            <h3>⏱️ Timer Control</h3>
+            <div class="controls">
+              <div>
+                <label>Duration (seconds)</label>
+                <input id="timerDuration" type="number" min="1" value="30">
+              </div>
+              <div style="display:flex;gap:10px">
+                <button id="btnStartTimer" style="flex:1">Start</button>
+                <button id="btnStopTimer" style="flex:1">Stop</button>
+              </div>
+              <div style="font-size:13px;color:var(--muted)">
+                <div>Status: <span id="timerStatus" style="font-weight:600">—</span></div>
+                <div>Remaining: <span id="remainingTime" style="font-weight:600">—</span> sec</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>💡 LDR / Beam</h3>
+            <div style="margin-top:12px;font-size:16px">
+              Beam value: <span id="beamVal" style="font-weight:700;color:#10b981;font-size:20px">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="chat-container">
+          <div class="chat-header">
+            <h2>🤖 AI Crop Assistant</h2>
+            <div class="city-label">📍 Indore, Madhya Pradesh, India</div>
+          </div>
+
+          <div id="weather-info">🌤 Loading weather data...</div>
+          <button id="getWeatherBtn">🔄 Refresh Weather</button>
+
+          <div id="chat-box"></div>
+
+          <div id="controls">
+            <input type="text" id="user-input" placeholder="Ask about crops, irrigation, pests..." />
+            <button id="mic-btn" title="Voice Input">🎙️</button>
+            <button id="stop-voice-btn" title="Stop Voice">🔇</button>
+            <button id="send-btn">Send</button>
+          </div>
+
+          <div class="toggle-section">
+            <div class="toggle-item">
+              <span>🇮🇳 Hindi</span>
+              <input type="checkbox" id="lang-toggle" />
+            </div>
+            <div class="toggle-item">
+              <span>🔊 TTS</span>
+              <input type="checkbox" id="tts-toggle" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script type="module">
+    import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFDcw1HNyZp6rRLMIEKX7c6-SdR7t7NCg",
+      authDomain: "esp32-agri-3c9a0.firebaseapp.com",
+      databaseURL: "https://esp32-agri-3c9a0-default-rtdb.firebaseio.com",
+      projectId: "esp32-agri-3c9a0",
+      storageBucket: "esp32-agri-3c9a0.appspot.com",
+      messagingSenderId: "687937182162",
+      appId: "1:687937182162:web:24e8514ce770c7117cd00b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    const GEMINI_API_KEY = "AIzaSyDPWG0daDvSAsGuKWRK154hno4w8n3f35o";
+    const WEATHER_API_KEY = "93ddf07dd0fc46c213a2900b17d633ab";
+    const FIXED_CITY = "Indore";
+
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+
+    let weatherData = null;
+    let isSpeaking = false;
+    let currentUtterance = null;
+
+    const toastContainer = document.getElementById('toastContainer');
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      toastContainer.appendChild(toast);
+      setTimeout(() => toast.remove(), 3500);
+    }
+
+    function write(path, value) {
+      return db.ref(path).set(value).catch(e => {
+        console.error('DB write error', e);
+        showToast('❌ Failed to update database');
+      });
+    }
+
+    const el = {
+      temperature: document.getElementById('temperature'),
+      humidity: document.getElementById('humidity'),
+      soil: document.getElementById('soil'),
+      rain: document.getElementById('rain'),
+      tempCircle: document.getElementById('tempCircle'),
+      humidityCircle: document.getElementById('humidityCircle'),
+      soilCircle: document.getElementById('soilCircle'),
+      securityStatus: document.getElementById('securityStatus'),
+      securityIcon: document.getElementById('securityIcon'),
+      relayState: document.getElementById('relayState'),
+      relayMessage: document.getElementById('relayMessage'),
+      manualToggle: document.getElementById('manualToggle'),
+      manualState: document.getElementById('manualState'),
+      applyManual: document.getElementById('applyManual'),
+      soilThreshold: document.getElementById('soilThreshold'),
+      soilThresholdVal: document.getElementById('soilThresholdVal'),
+      btnSaveThreshold: document.getElementById('btnSaveThreshold'),
+      btnToggleRelay: document.getElementById('btnToggleRelay'),
+      timerDuration: document.getElementById('timerDuration'),
+      btnStartTimer: document.getElementById('btnStartTimer'),
+      btnStopTimer: document.getElementById('btnStopTimer'),
+      timerStatus: document.getElementById('timerStatus'),
+      remainingTime: document.getElementById('remainingTime'),
+      beamVal: document.getElementById('beamVal'),
+      autoMode: document.getElementById('autoMode'),
+      manualMode: document.getElementById('manualMode')
+    };
+
+    function updateCircularProgress(circle, value, max = 100) {
+      const circumference = 440;
+      const offset = circumference - (value / max) * circumference;
+      circle.style.strokeDashoffset = offset;
+    }
+
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+    const langToggle = document.getElementById("lang-toggle");
+    const ttsToggle = document.getElementById("tts-toggle");
+    const weatherInfo = document.getElementById("weather-info");
+    const micBtn = document.getElementById("mic-btn");
+
+    auth.signInAnonymously().catch(err => console.error('Auth error', err));
+
+    db.ref('/sensors').on('value', snap => {
+      const s = snap.val() || {};
+      if (s.temperature !== undefined) {
+        el.temperature.textContent = s.temperature + '°C';
+        updateCircularProgress(el.tempCircle, s.temperature, 50);
+      }
+      if (s.humidity !== undefined) {
+        el.humidity.textContent = s.humidity + '%';
+        updateCircularProgress(el.humidityCircle, s.humidity);
+      }
+      if (s.soil !== undefined) {
+        el.soil.textContent = s.soil + '%';
+        updateCircularProgress(el.soilCircle, s.soil);
+      }
+      if (s.rain !== undefined) el.rain.textContent = s.rain ? '🌧️ YES' : '☀️ NO';
+    });
+
+    db.ref('/security/status').on('value', snap => {
+      const v = snap.val() || '';
+      el.securityStatus.textContent = v;
+      el.securityIcon.textContent = v.toLowerCase().includes('broken') ? '🚨' : '🔒';
+    });
+
+    db.ref('/relay').on('value', snap => {
+      const r = snap.val() || {};
+      if (r.state !== undefined) el.relayState.textContent = r.state;
+      if (r.message) el.relayMessage.textContent = r.message;
+      if (r.manual !== undefined) el.manualToggle.checked = !!r.manual;
+      if (r.soilThreshold !== undefined) {
+        el.soilThreshold.value = r.soilThreshold;
+        el.soilThresholdVal.textContent = r.soilThreshold + '%';
+      }
+      if (r.timerStatus) el.timerStatus.textContent = r.timerStatus;
+      if (r.remainingTime !== undefined) el.remainingTime.textContent = r.remainingTime;
+    });
+
+    db.ref('/relay/timerStatus').on('value', (snap) => {
+      const status = snap.val();
+      if (status === "Timer running") showToast("⏱️ Timer started — Pump ON");
+      else if (status === "Timer complete") showToast("✅ Timer complete — Pump OFF");
+    });
+
+    el.btnToggleRelay.addEventListener('click', async () => {
+      if (el.autoMode.checked) {
+        showToast('⚠️ Switch to Manual mode first');
+        return;
+      }
+      const cur = (await db.ref('/relay/state').once('value')).val();
+      const next = (cur === 'ON') ? 'OFF' : 'ON';
+      await write('/relay/state', next);
+      showToast(`✅ Relay ${next}`);
+    });
+
+    el.applyManual.addEventListener('click', async () => {
+      if (el.autoMode.checked) {
+        showToast('⚠️ Switch to Manual mode first');
+        return;
+      }
+      await write('/relay/manual', true);
+      await write('/relay/state', el.manualState.value);
+      showToast(`✅ Manual: ${el.manualState.value}`);
+    });
+
+    el.manualToggle.addEventListener('change', () => {
+      if (el.autoMode.checked) {
+        showToast('⚠️ Auto mode active');
+        el.manualToggle.checked = false;
+        return;
+      }
+      write('/relay/manual', el.manualToggle.checked);
+    });
+
+    el.btnSaveThreshold.addEventListener('click', async () => {
+      const v = parseInt(el.soilThreshold.value);
+      await write('/relay/soilThreshold', v);
+      el.soilThresholdVal.textContent = v + '%';
+      showToast(`✅ Threshold: ${v}%`);
+    });
+
+    function updateSoilThresholdState() {
+      const isAuto = el.autoMode.checked;
+      el.soilThreshold.disabled = !isAuto;
+      el.btnSaveThreshold.disabled = !isAuto;
+      el.soilThreshold.style.opacity = isAuto ? "1" : "0.5";
+      el.btnSaveThreshold.style.opacity = isAuto ? "1" : "0.6";
+    }
+
+    auth.onAuthStateChanged(() => updateSoilThresholdState());
+
+    el.autoMode.addEventListener('change', () => {
+      if (el.autoMode.checked) {
+        el.manualMode.checked = false;
+        write('/relay/manual', false);
+        updateSoilThresholdState();
+        showToast('✅ Auto Mode Active');
+      }
+    });
+
+    el.manualMode.addEventListener('change', () => {
+      if (el.manualMode.checked) {
+        el.autoMode.checked = false;
+        write('/relay/manual', true);
+        updateSoilThresholdState();
+        showToast('✅ Manual Mode Active');
+      }
+    });
+
+    el.btnStartTimer.addEventListener('click', async () => {
+      const sec = parseInt(el.timerDuration.value, 10) || 0;
+      if (sec <= 0) {
+        showToast('⚠️ Invalid duration');
+        return;
+      }
+      await write('/relay/timerDuration', sec);
+      await write('/relay/startTimer', true);
+      showToast(`⏱️ Timer: ${sec}s`);
+    });
+
+    el.btnStopTimer.addEventListener('click', async () => {
+      await write('/relay/startTimer', false);
+      await write('/relay/timerDuration', 0);
+      await write('/relay/timerStatus', 'Stopped');
+      showToast('⏹️ Timer stopped');
+    });
+
+    el.soilThreshold.addEventListener('input', () => {
+      el.soilThresholdVal.textContent = el.soilThreshold.value + '%';
+    });
+
+    // IMPROVED TTS FUNCTION
+    function speakText(text) {
+      if (!ttsToggle.checked || !text) return;
+
+      try {
+        // Stop any ongoing speech
+        if (isSpeaking) {
+          window.speechSynthesis.cancel();
+          isSpeaking = false;
+        }
+
+        // Wait a bit for cancel to complete
+        setTimeout(() => {
+          try {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = langToggle.checked ? "hi-IN" : "en-US";
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+
+            utterance.onstart = () => {
+              isSpeaking = true;
+              currentUtterance = utterance;
+            };
+
+            utterance.onend = () => {
+              isSpeaking = false;
+              currentUtterance = null;
+            };
+
+            utterance.onerror = (e) => {
+              console.error("TTS error:", e);
+              isSpeaking = false;
+              currentUtterance = null;
+            };
+
+            window.speechSynthesis.speak(utterance);
+          } catch (e) {
+            console.error("TTS speak error:", e);
+            isSpeaking = false;
+          }
+        }, 100);
+      } catch (e) {
+        console.error("TTS error:", e);
+      }
+    }
+
+    function stopVoice() {
+      try {
+        if (isSpeaking) {
+          window.speechSynthesis.cancel();
+          isSpeaking = false;
+          currentUtterance = null;
+          showToast("🔇 Voice stopped");
+        }
+      } catch (e) {
+        console.error("Stop voice error:", e);
+      }
+    }
+
+    function addMessage(text, sender) {
+      const div = document.createElement("div");
+      div.classList.add("message", sender);
+      div.textContent = text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      if (sender === "bot") {
+        speakText(text);
+      }
+    }
+
+    function getIrrigationAdvice(temp, humidity, rain) {
+      if (rain > 2) return "💧 Rain expected — irrigation not needed";
+      if (humidity > 75) return "🌫️ High humidity — reduce irrigation";
+      if (temp > 35) return "🔥 Very hot — irrigate early morning";
+      if (temp > 30) return "☀️ Hot — maintain moisture levels";
+      if (temp < 20) return "🌡️ Cool — reduce irrigation";
+      return "🌤 Moderate — normal irrigation";
+    }
+
+    async function getWeather() {
+      weatherInfo.textContent = "⏳ Fetching weather...";
+      try {
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${FIXED_CITY}&appid=${WEATHER_API_KEY}&units=metric`
+        );
+        const data = await res.json();
+        if (data.cod !== 200) throw new Error(data.message || "City not found");
+        const rain = data.rain ? data.rain["1h"] || data.rain["3h"] || 0 : 0;
+        weatherData = {
+          city: FIXED_CITY,
+          temp: data.main.temp,
+          humidity: data.main.humidity,
+          desc: data.weather[0].description,
+          rain,
+          windSpeed: data.wind.speed,
+          pressure: data.main.pressure
+        };
+        const advice = getIrrigationAdvice(weatherData.temp, weatherData.humidity, weatherData.rain);
+        weatherInfo.innerHTML = `
+          🌍 <b>${FIXED_CITY}</b><br>
+          🌡 ${weatherData.temp}°C | 💧 ${weatherData.humidity}% | 🌬️ ${weatherData.windSpeed} m/s<br>
+          🌦 ${weatherData.desc}<br>
+          <b>Irrigation:</b> ${advice}
+        `;
+        addMessage(`📍 Weather: ${weatherData.temp}°C, ${weatherData.desc}. ${advice}`, "bot");
+      } catch (err) {
+        console.error("Weather error", err);
+        weatherInfo.textContent = "⚠️ " + (err.message || "Failed to fetch weather");
+      }
+    }
+
+    // IMPROVED RESPONSE EXTRACTION
+    function extractBotResponse(result) {
+      try {
+        if (!result) return "No response received";
+        
+        if (result.response && typeof result.response.text === 'function') {
+          return result.response.text();
+        }
+        
+        if (result.candidates && result.candidates.length > 0) {
+          const candidate = result.candidates[0];
+          if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+            return candidate.content.parts[0].text || "Empty response";
+          }
+        }
+        
+        if (typeof result === 'string') return result;
+        
+        return "Unable to parse response";
+      } catch (e) {
+        console.error("Response extraction error:", e);
+        return "Error parsing response";
+      }
+    }
+
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+      
+      addMessage(message, "user");
+      userInput.value = "";
+
+      const isHindi = langToggle.checked;
+      const language = isHindi ? "Hindi (Devanagari)" : "English";
+
+      let prompt = "";
+      const isAgriQuery = /weather|rain|crop|temperature|climate|irrigation|soil|humidity|farm|pest|fertilizer|harvest|season|plant|sow|मौसम|बारिश|फसल|सिंचाई/i.test(message);
+
+      if (weatherData && isAgriQuery) {
+        prompt = `You are an expert agricultural advisor for Indore, Madhya Pradesh.
+
+Weather Data:
+- Temperature: ${weatherData.temp}°C
+- Humidity: ${weatherData.humidity}%
+- Weather: ${weatherData.desc}
+- Rain: ${weatherData.rain}mm
+- Wind: ${weatherData.windSpeed} m/s
+
+Farmer Question: "${message}"
+
+Provide practical advice on:
+1. Best crops for current weather
+2. Irrigation schedule (timing & amount)
+3. Pest/disease warnings
+4. Fertilizer recommendations
+5. Action steps for today
+
+Response Language: ${language}
+Keep answer: short, practical, actionable, farmer-friendly.`;
+      } else {
+        prompt = `You are an agricultural expert helping Indian farmers.
+
+Question: "${message}"
+
+Provide helpful advice on farming, crops, irrigation, pests, soil, or fertilizers.
+
+Response Language: ${language}
+Keep answer: short, clear, practical.`;
+      }
+
+      try {
+        const result = await model.generateContent(prompt);
+        const text = extractBotResponse(result);
+        addMessage(text, "bot");
+      } catch (err) {
+        console.error("AI Error:", err);
+        const errMsg = err?.message || String(err);
+        
+        if (/429|quota|rate limit/i.test(errMsg)) {
+          addMessage("⚠️ API limit reached. Please wait 1 minute and try again.", "bot");
+        } else if (/blocked|safety/i.test(errMsg)) {
+          addMessage("⚠️ Response blocked by safety filter. Please rephrase your question.", "bot");
+        } else {
+          addMessage(`⚠️ Error: ${errMsg}`, "bot");
+        }
+      }
+    }
+
+    // SPEECH RECOGNITION
+    let recognition;
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRec) {
+      recognition = new SpeechRec();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-IN";
+
+      recognition.onstart = () => {
+        micBtn.classList.add("listening");
+        micBtn.textContent = "🎤";
+      };
+      recognition.onend = () => {
+        micBtn.classList.remove("listening");
+        micBtn.textContent = "🎙️";
+      };
+      recognition.onerror = (e) => {
+        console.error("Speech error:", e);
+        micBtn.classList.remove("listening");
+        addMessage("🎙️ Voice error. Try again.", "bot");
+      };
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        userInput.value = transcript;
+        sendMessage();
+      };
+
+      micBtn.addEventListener('click', () => {
+        try {
+          recognition.lang = langToggle.checked ? "hi-IN" : "en-IN";
+          recognition.start();
+        } catch (e) {
+          console.error("Mic error:", e);
+        }
+      });
+    } else {
+      micBtn.disabled = true;
+      micBtn.title = "Not supported";
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") stopVoice();
+    });
+
+    document.getElementById("stop-voice-btn").onclick = stopVoice;
+    document.getElementById("send-btn").onclick = sendMessage;
+    document.getElementById("getWeatherBtn").onclick = getWeather;
+    
+    userInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    addMessage("👋 Namaste! I'm your AI Agricultural Assistant for Indore. Ask me about crops, irrigation, pests, fertilizer, or weather! 🌾", "bot");
+    
+    getWeather();
+  </script>
+</body>
+</html>
